@@ -1,6 +1,8 @@
 package com.example;
 
+import java.util.Arrays;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class Task2 {
     public static void main(String[] args) {
@@ -23,7 +25,24 @@ public class Task2 {
 //             }
 //           ..
 //            }
+        System.out.println(countComeBack(data));
 
         //3. Создать метод, который показывает есть ли номер "К473СЕ178" в данных.
+        System.out.println(findNumber(data, "Н560ЕВ894"));
+    }
+
+    public static Long countComeBack(Map<Integer, Map<String, String[]>> data) {
+        return data.entrySet().stream().map(
+                e -> Arrays.stream(e.getValue().get("out"))
+                        .filter(car -> Integer.parseInt(car.substring(6)) == e.getKey())
+                        .count()).reduce(Long::sum).orElse(0L);
+
+    }
+
+    public static boolean findNumber(Map<Integer, Map<String, String[]>> data, String number) {
+        return data.entrySet().stream().flatMap(e ->
+                        Stream.concat(Arrays.stream(e.getValue().get("out")), Arrays.stream(e.getValue().get("input")))
+                )
+                .anyMatch(e -> e.equals(number));
     }
 }
