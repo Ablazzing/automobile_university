@@ -33,7 +33,7 @@ public class Task2 {
 
     public static Long countComeBack(Map<Integer, Map<String, String[]>> data) {
         return data.entrySet().stream().map(
-                e -> Arrays.stream(e.getValue().get("out"))
+                e -> Arrays.stream(e.getValue().get("input"))
                         .filter(car -> Integer.parseInt(car.substring(6)) == e.getKey())
                         .count())
                 .reduce(Long::sum)
