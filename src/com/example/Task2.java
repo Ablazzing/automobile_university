@@ -35,8 +35,9 @@ public class Task2 {
         return data.entrySet().stream().map(
                 e -> Arrays.stream(e.getValue().get("out"))
                         .filter(car -> Integer.parseInt(car.substring(6)) == e.getKey())
-                        .count()).reduce(Long::sum).orElse(0L);
-
+                        .count())
+                .reduce(Long::sum)
+                .orElse(0L);
     }
 
     public static boolean findNumber(Map<Integer, Map<String, String[]>> data, String number) {
