@@ -1,36 +1,50 @@
 package com.example;
 
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Task1 {
+
     public static void main(String[] args) {
-//        Входящие данные
-//        Map<Integer, Map<String, String[]>> - где ключ первого уровня - номер региона,
-//        out, input - ключи второго уровня (выезд/въезд), и String[] - перечень номеров машин въехавших/выехавших.
-//           { 1 : {
-//                "out" : ["К474СЕ178"],
-//                "input": ["А222РТ178"]
-//              },
-//             2 : {
-//                  "out" : ["К722АВ12", "А222РТ178"],
-//                  "input" : ["М001АВ01", "А023РВ73"],
-//             }
-//           ..
-//            }
         Map<Integer, Map<String, String[]>> data = GeneratorData.getData();
+        System.out.println(getFirstFiveCar(data));
+        System.out.println(getListAllInputCat(data));
+        System.out.println(getStatisticsAllRegion(data));
+    }
 
-        //Собираем статистику по каждому региону:
-        //1. Написать метод, который выбирает первые 5 (или меньше, если нет 5) выехавших машин из каждого региона.
-        //Сохранить в следующей структуре:
-        // { 1: [""А222РТ001""]
-        //   2: ["К722АВ12", "А222РТ178"]
-        //..
-        // }
+    public static Map<Integer, List<String>> getFirstFiveCar(Map<Integer, Map<String, String[]>> data) {
+        Map<Integer, List<String>> firstFiveNumbersByRegion = new HashMap<>();
+        data.forEach((region, regionStatistics) -> {
+            String[] numbersOut = regionStatistics.get("out");
+            List<String> firstFiveNumbers = Arrays.stream(numbersOut)
+                    .limit(5)
+                    .collect(Collectors.toList());
+            firstFiveNumbersByRegion.put(region, firstFiveNumbers);
+        });
+        return firstFiveNumbersByRegion;
+        //Подсказка, используйте StreamAPI: методы .forEach .limit .collect
+        //HashMap : .put
+    }
 
-        //2. Создать метод, который возвращает список всех въехавших машин из всех регионов используя Stream api.
+    public static List<String> getListAllInputCat(Map<Integer, Map<String, String[]>> data) {
+        List<String> cars = new ArrayList<>();
+        data.forEach((region, regionStatistics) -> {
+            cars.addAll(Arrays.asList(regionStatistics.get("input")));
+        });
+        return cars;
+        // Подсказка, используйте StreamAPI: методы .forEach;
+        // Для создания списка используйте ArrayList методы .add .addAll
+    }
 
-        //3. Составить статистику по каждому региону: сколько машин въехало, сколько выехало.
-        //Регионы должны быть отсортированы: от самого большого номера к самому маленькому.
-
+    public static Map<Integer, String> getStatisticsAllRegion(Map<Integer, Map<String, String[]>> data) {
+        Map<Integer, String> statistics = new TreeMap<>(Collections.reverseOrder());
+        data.forEach((region, regionStatistics) -> {
+            Integer input = regionStatistics.get("input").length;
+            Integer output = regionStatistics.get("out").length;
+            statistics.put(region, "Въехало машин " + input + " " + "Выехало машин " + output);
+        });
+        return statistics;
+        //Подсказка, используйте StreamAPI: методы .forEach;
+        //Для создание отсортированной реализации Map используйте класс TreeMap
     }
 }
